@@ -6,6 +6,7 @@ TagManager:
   tags:
   - winnerCollider
   - DestroyCollider
+  - CannonBall
   layers:
   - Default
   - TransparentFX

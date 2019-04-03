@@ -39,19 +39,48 @@ public class SimpleCharacterControl : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        ContactPoint[] contactPoints = collision.contacts;
-        for (int i = 0; i < contactPoints.Length; i++)
+        if (collision.gameObject.tag == "CannonBall")
         {
-            if (Vector3.Dot(contactPoints[i].normal, Vector3.up) > 0.5f)
+            ToDie();
+        }
+        else
+        {
+            ContactPoint[] contactPoints = collision.contacts;
+            for (int i = 0; i < contactPoints.Length; i++)
             {
-                if (!m_collisions.Contains(collision.collider))
+                if (Vector3.Dot(contactPoints[i].normal, Vector3.up) > 0.5f)
                 {
-                    m_collisions.Add(collision.collider);
+                    if (!m_collisions.Contains(collision.collider))
+                    {
+                        m_collisions.Add(collision.collider);
+                    }
+                    m_isGrounded = true;
                 }
-                m_isGrounded = true;
             }
         }
     }
+
+    private void ToDie()
+    {
+        m_rigidBody.Sleep();
+        m_animator.SetBool("Death", true);
+        Invoke("Respawn", 2f);
+    }
+
+    private void Respawn()
+    {
+        m_controlMode = ControlMode.Direct;
+        m_animator.SetBool("Death", false);
+        //m_animator.SetTrigger("Respawn");
+        //TreasureAnimator.SetBool("Victory", false);
+        //MenuAnimator.SetBool("Victory", false);
+        //CanyonAnimator.SetBool("On", true);
+        //CanyonAnimator.GetComponent<BallsEmission>().On = true;
+        transform.position = respawnPoint.position;
+        transform.rotation = respawnPoint.rotation;
+        m_rigidBody.WakeUp();
+    }
+
 
     private void OnCollisionStay(Collision collision)
     {
@@ -115,19 +144,7 @@ public class SimpleCharacterControl : MonoBehaviour
         m_wasGrounded = m_isGrounded;
     }
 
-    private void Respawn()
-    {
-        m_controlMode = ControlMode.Direct;
-        //m_animator.SetBool("Die", false);
-        //m_animator.SetTrigger("Respawn");
-        //TreasureAnimator.SetBool("Victory", false);
-        //MenuAnimator.SetBool("Victory", false);
-        //CanyonAnimator.SetBool("On", true);
-        //CanyonAnimator.GetComponent<BallsEmission>().On = true;
-        transform.position = respawnPoint.position;
-        transform.rotation = respawnPoint.rotation;
-        //m_rigidBody.WakeUp();
-    }
+
 
     private void TankUpdate()
     {
