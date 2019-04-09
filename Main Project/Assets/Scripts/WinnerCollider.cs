@@ -5,8 +5,25 @@ using UnityEngine;
 public class WinnerCollider : MonoBehaviour
 {
     [SerializeField] GameObject player;
+    [SerializeField] GameObject winnerParticles;
+    public AudioControl audioControl;
+    private bool ontrigger;
 
-    public void OnTriggerEnter(Collider other){
-        player.GetComponent<Animator>().SetBool("Dance", true);
+    void Start()
+    {
+        winnerParticles.SetActive(false);
+        ontrigger = true;
+    }
+    public void OnTriggerEnter(Collider other)
+    {
+        if (ontrigger)
+        {
+            player.GetComponent<Animator>().SetBool("Dance", true);
+            winnerParticles.SetActive(true);
+            audioControl.PlayAudioClip(1);
+        }
+    }
+    private void OnTriggerExit(Collider other) {
+        ontrigger = false;    
     }
 }

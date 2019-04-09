@@ -36,12 +36,12 @@ public class SimpleCharacterControl : MonoBehaviour
     private List<Collider> m_collisions = new List<Collider>();
 
     public Transform respawnPoint;
-
+    private bool alreadyDead;
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "CannonBall")
+        if (collision.gameObject.tag == "CannonBall" || collision.gameObject.tag == "DeathFloor")
         {
-            ToDie();
+            if(!alreadyDead) ToDie();
         }
         else
         {
@@ -64,6 +64,7 @@ public class SimpleCharacterControl : MonoBehaviour
     {
         m_rigidBody.Sleep();
         m_animator.SetBool("Death", true);
+        alreadyDead = true;
         Invoke("Respawn", 2f);
     }
 
@@ -71,6 +72,7 @@ public class SimpleCharacterControl : MonoBehaviour
     {
         m_controlMode = ControlMode.Direct;
         m_animator.SetBool("Death", false);
+        alreadyDead = false;
         //m_animator.SetTrigger("Respawn");
         //TreasureAnimator.SetBool("Victory", false);
         //MenuAnimator.SetBool("Victory", false);
